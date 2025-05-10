@@ -7,7 +7,8 @@ from weasyprint import HTML
 
 class MarkdownPDFConverter:
     def __init__(self, css: str = ""):
-        self.md_parser = MarkdownIt()
+        # GFM-like includes 'table' by default
+        self.md_parser = MarkdownIt("gfm-like")
         self.css = css or self._load_default_css()
 
     def _load_default_css(self):
