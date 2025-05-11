@@ -7,6 +7,7 @@ from app.services.html_to_markdown import HTMLToMarkdownConverter
 from app.services.html_to_pdf import HTMLToPDFConverter
 from app.services.markdown_to_html import MarkdownHTMLConverter
 from app.services.markdown_to_pdf import MarkdownPDFConverter
+from app.services.pdf_to_markdown import PDFToMarkdownConverter
 
 router = APIRouter(prefix="/api/v1/markdown", tags=["Markdown"])
 
@@ -70,4 +71,20 @@ async def convert_html_to_pdf(file: UploadFile = File(...)):
         io.BytesIO(pdf_bytes),
         media_type="application/pdf",
         headers={"Content-Disposition": f'attachment; filename="{filename}.pdf"'},
+    )
+
+
+@router.post("/convert-pdf-to-markdown/")
+async def convert_pdf_to_markdown(file: UploadFile = File(...)):
+    pdf_bytes = await file.read()
+
+    converter = PDFToMarkdownConverter()
+    markdown_text = converter.convert(pdf_bytes)
+
+    filename = file.filename.rsplit(".", 1)[0] if file.filename else "document"
+
+    return PlainTextResponse(
+        content=markdown_text,
+        media_type="text/markdown",
+        headers={"Content-Disposition": f'attachment; filename="{filename}.md"'},
     )
