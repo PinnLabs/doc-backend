@@ -47,7 +47,7 @@ def test_convert_pdf_to_markdown_endpoint():
     file = io.BytesIO(pdf_bytes)
 
     response = client.post(
-        "/api/v1/markdown/convert-pdf-to-markdown/",
+        "/api/v1/pdf/convert-to-markdown/",
         files={"file": ("sample.pdf", file, "application/pdf")},
     )
 

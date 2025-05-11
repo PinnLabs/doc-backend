@@ -89,7 +89,7 @@ def test_convert_html_file_to_markdown():
     file = io.BytesIO(html_content)
 
     response = client.post(
-        "/api/v1/markdown/convert-to-md/",
+        "/api/v1/html/convert-to-md/",
         files={"file": ("example.html", file, "text/html")},
     )
 
@@ -103,7 +103,7 @@ def test_convert_html_with_inline_style_removes_style():
     file = io.BytesIO(html_content)
 
     response = client.post(
-        "/api/v1/markdown/convert-to-md/",
+        "/api/v1/html/convert-to-md/",
         files={"file": ("example.html", file, "text/html")},
     )
 
@@ -117,7 +117,7 @@ def test_convert_html_with_style_preserved():
     file = io.BytesIO(html_content)
 
     response = client.post(
-        "/api/v1/markdown/convert-to-md/?keep_styles=true",
+        "/api/v1/html/convert-to-md/?keep_styles=true",
         files={"file": ("example.html", file, "text/html")},
     )
 

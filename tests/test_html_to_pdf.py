@@ -50,7 +50,7 @@ def test_convert_html_file_to_pdf():
     file = io.BytesIO(html_content)
 
     response = client.post(
-        "/api/v1/markdown/convert-html-to-pdf/",
+        "/api/v1/html/convert-to-pdf/",
         files={"file": ("example.html", file, "text/html")},
     )
 
@@ -68,7 +68,7 @@ def test_convert_html_with_script_is_sanitized():
     file = io.BytesIO(html_content)
 
     response = client.post(
-        "/api/v1/markdown/convert-html-to-pdf/",
+        "/api/v1/html/convert-to-pdf/",
         files={"file": ("scripted.html", file, "text/html")},
     )
 
