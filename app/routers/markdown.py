@@ -1,12 +1,13 @@
 import io
 
 from fastapi import APIRouter, File, Query, UploadFile
-from fastapi.responses import PlainTextResponse, StreamingResponse
+from fastapi.responses import HTMLResponse, PlainTextResponse, StreamingResponse
 
 from app.services.html_to_markdown import HTMLToMarkdownConverter
 from app.services.html_to_pdf import HTMLToPDFConverter
 from app.services.markdown_to_html import MarkdownHTMLConverter
 from app.services.markdown_to_pdf import MarkdownPDFConverter
+from app.services.pdf_to_html import PDFToHTMLConverter
 from app.services.pdf_to_markdown import PDFToMarkdownConverter
 
 router = APIRouter(prefix="/api/v1/markdown", tags=["Markdown"])
@@ -87,4 +88,18 @@ async def convert_pdf_to_markdown(file: UploadFile = File(...)):
         content=markdown_text,
         media_type="text/markdown",
         headers={"Content-Disposition": f'attachment; filename="{filename}.md"'},
+    )
+
+
+@router.post("/convert-pdf-to-html/")
+async def convert_pdf_to_html(file: UploadFile = File(...)):
+    pdf_content = await file.read()
+    converter = PDFToHTMLConverter()
+    html_bytes = converter.convert(pdf_content)
+
+    filename = file.filename.rsplit(".", 1)[0] if file.filename else "document"
+    return StreamingResponse(
+        io.BytesIO(html_bytes),
+        media_type="text/html",
+        headers={"Content-Disposition": f'attachment; filename="{filename}.html"'},
     )
