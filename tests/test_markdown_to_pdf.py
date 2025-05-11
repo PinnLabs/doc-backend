@@ -39,7 +39,7 @@ async def test_api_markdown_conversion(client):
         "file": ("test.md", markdown_content, "text/markdown"),
     }
 
-    response = client.post("/api/v1/markdown/convert/", files=files)
+    response = client.post("/api/v1/markdown/convert-docs/", files=files)
 
     assert response.status_code == 200
     assert response.headers["content-type"] == "application/pdf"

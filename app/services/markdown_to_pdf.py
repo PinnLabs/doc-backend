@@ -12,7 +12,7 @@ class MarkdownPDFConverter:
         self.css = css or self._load_default_css()
 
     def _load_default_css(self):
-        path = "app/templates/default.css"
+        path = "app/templates/default_pdf.css"
         if os.path.exists(path):
             with open(path) as f:
                 return f.read()
