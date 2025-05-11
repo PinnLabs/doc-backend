@@ -4,6 +4,7 @@ from fastapi import APIRouter, File, Query, UploadFile
 from fastapi.responses import PlainTextResponse, StreamingResponse
 
 from app.services.html_to_markdown import HTMLToMarkdownConverter
+from app.services.html_to_pdf import HTMLToPDFConverter
 from app.services.markdown_to_html import MarkdownHTMLConverter
 from app.services.markdown_to_pdf import MarkdownPDFConverter
 
@@ -55,4 +56,18 @@ async def convert_html_to_markdown(
         content=markdown_text,
         media_type="text/markdown",
         headers={"Content-Disposition": f'attachment; filename="{filename}.md"'},
+    )
+
+
+@router.post("/convert-html-to-pdf/")
+async def convert_html_to_pdf(file: UploadFile = File(...)):
+    html_content = await file.read()
+    converter = HTMLToPDFConverter()
+    pdf_bytes = converter.convert(html_content.decode())
+
+    filename = file.filename.rsplit(".", 1)[0] if file.filename else "document"
+    return StreamingResponse(
+        io.BytesIO(pdf_bytes),
+        media_type="application/pdf",
+        headers={"Content-Disposition": f'attachment; filename="{filename}.pdf"'},
     )
