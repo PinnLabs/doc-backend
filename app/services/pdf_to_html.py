@@ -1,35 +1,37 @@
-import io
-import subprocess
-import tempfile
-from pathlib import Path
+import fitz  # PyMuPDF
+from html import escape
 
 
 class PDFToHTMLConverter:
-    def convert(self, pdf_bytes: bytes) -> bytes:
-        with tempfile.TemporaryDirectory() as tmpdir:
-            input_path = Path(tmpdir) / "input.pdf"
-            output_path = Path(tmpdir) / "output.html"
+    def __init__(self):
+        pass
 
-            input_path.write_bytes(pdf_bytes)
+    def convert(self, pdf_bytes: bytes) -> str:
+        doc = fitz.open(stream=pdf_bytes, filetype="pdf")
+        html_parts = [
+            "<html><head><meta charset='utf-8'><style>div.page { position: relative; width: 100%; height: auto; } .text { position: absolute; white-space: pre; }</style></head><body>"
+        ]
 
-            result = subprocess.run(
-                [
-                    "pdf2htmlEX",
-                    "--embed-css",
-                    "1",
-                    "--embed-image",
-                    "1",
-                    "--embed-font",
-                    "1",
-                    "--dest-dir",
-                    tmpdir,
-                    "--output",
-                    str(output_path.name),
-                    str(input_path),
-                ],
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
-                check=True,
-            )
+        for page_num, page in enumerate(doc):
+            text_blocks = page.get_text("dict")["blocks"]
+            page_html = '<div class="page">'
+            for block in text_blocks:
+                for line in block.get("lines", []):
+                    for span in line.get("spans", []):
+                        x = span["bbox"][0]
+                        y = span["bbox"][1]
+                        font_size = span["size"]
+                        color = "#{:06x}".format(span["color"])
+                        font = span["font"]
 
-            return output_path.read_bytes()
+                        page_html += (
+                            f'<div class="text" '
+                            f'style="left:{x}px; top:{y}px; '
+                            f'font-size:{font_size}px; color:{color}; font-family:{font};">'
+                            f"{escape(span['text'])}</div>"
+                        )
+            page_html += "</div>"
+            html_parts.append(page_html)
+
+        html_parts.append("</body></html>")
+        return "\n".join(html_parts)

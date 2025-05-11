@@ -91,15 +91,20 @@ async def convert_pdf_to_markdown(file: UploadFile = File(...)):
     )
 
 
-@router.post("/convert-pdf-to-html/")
+
+@router.post("/pdf-to-html/")
 async def convert_pdf_to_html(file: UploadFile = File(...)):
-    pdf_content = await file.read()
+    pdf_bytes = await file.read()
     converter = PDFToHTMLConverter()
-    html_bytes = converter.convert(pdf_content)
+    html_output = converter.convert(pdf_bytes)
 
     filename = file.filename.rsplit(".", 1)[0] if file.filename else "document"
+
     return StreamingResponse(
-        io.BytesIO(html_bytes),
+        content=io.BytesIO(html_output.encode("utf-8")),
         media_type="text/html",
-        headers={"Content-Disposition": f'attachment; filename="{filename}.html"'},
+        headers={
+            "Content-Disposition": f'attachment; filename="{filename}.html"'
+        },
     )
+
