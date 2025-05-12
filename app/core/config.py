@@ -6,10 +6,12 @@ from pydantic_settings import BaseSettings
 class Settings(BaseSettings):
     DATABASE_URL: str
     SECRET_KEY: str
-    JWT_SECRET_KEY: str
+    JWT_SECRET: str
     JWT_ALGORITHM: str = "HS256"
-    ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
-    REFRESH_TOKEN_EXPIRE_MINUTES: int = 1440
+    JWT_EXP_SECONDS: int = 3600
+    FIREBASE_CREDENTIALS: str = (
+        "app/doccrafter-544cf-firebase-adminsdk-fbsvc-368172c6d5.json"
+    )
     DEBUG: bool = False
     ENV: str = "development"
 
