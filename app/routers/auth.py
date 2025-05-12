@@ -19,8 +19,9 @@ async def login(payload: LoginRequest, response: Response):
         value=session_token,
         httponly=True,
         secure=False,  # Set to True in production!
-        samesite="Lax",
+        samesite="Strict",
         max_age=3600,
+        path="/",
     )
     return response
 
