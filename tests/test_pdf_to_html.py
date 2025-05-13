@@ -29,7 +29,7 @@ def test_pdf_to_html_conversion_returns_html(sample_pdf_bytes):
     assert "Hello, World!" in html
 
 
-def test_pdf_to_html_endpoint(sample_pdf_bytes):
+def test_pdf_to_html_endpoint(client, sample_pdf_bytes):
     response = client.post(
         "/api/v1/pdf/convert-to-html/",
         files={"file": ("sample.pdf", io.BytesIO(sample_pdf_bytes), "application/pdf")},

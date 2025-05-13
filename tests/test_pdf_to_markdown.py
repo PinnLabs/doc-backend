@@ -41,7 +41,7 @@ def test_pdf_to_markdown_removes_blank_lines():
     assert markdown.count("\n\n") == 1  # Paragraph split
 
 
-def test_convert_pdf_to_markdown_endpoint():
+def test_convert_pdf_to_markdown_endpoint(client):
     text = "FastAPI PDF\nIntegration Test"
     pdf_bytes = generate_pdf(text)
     file = io.BytesIO(pdf_bytes)

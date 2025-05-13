@@ -9,6 +9,8 @@ class Settings(BaseSettings):
     JWT_SECRET: str
     JWT_ALGORITHM: str = "HS256"
     JWT_EXP_SECONDS: int = 3600
+    SUPABASE_URL: str
+    SUPABASE_KEY: str
     FIREBASE_CREDENTIALS: str = (
         "app/doccrafter-544cf-firebase-adminsdk-fbsvc-368172c6d5.json"
     )

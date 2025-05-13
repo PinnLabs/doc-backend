@@ -84,7 +84,7 @@ def test_removes_style_tags():
     assert "style" not in markdown
 
 
-def test_convert_html_file_to_markdown():
+def test_convert_html_file_to_markdown(client):
     html_content = b"<h2>Subtitle</h2><p>Some paragraph.</p>"
     file = io.BytesIO(html_content)
 
@@ -98,7 +98,7 @@ def test_convert_html_file_to_markdown():
     assert "Some paragraph." in response.text
 
 
-def test_convert_html_with_inline_style_removes_style():
+def test_convert_html_with_inline_style_removes_style(client):
     html_content = b'<p style="color:red;">Styled text</p>'
     file = io.BytesIO(html_content)
 
@@ -112,7 +112,7 @@ def test_convert_html_with_inline_style_removes_style():
     assert "style=" not in response.text
 
 
-def test_convert_html_with_style_preserved():
+def test_convert_html_with_style_preserved(client):
     html_content = b'<p style="color:red;">Styled text</p>'
     file = io.BytesIO(html_content)
 

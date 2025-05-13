@@ -45,7 +45,7 @@ def test_html_to_pdf_with_custom_css():
     assert "Styled paragraph" in extracted
 
 
-def test_convert_html_file_to_pdf():
+def test_convert_html_file_to_pdf(client):
     html_content = b"<h2>Title</h2><p>PDF paragraph.</p>"
     file = io.BytesIO(html_content)
 
@@ -63,7 +63,7 @@ def test_convert_html_file_to_pdf():
     assert "PDF paragraph." in extracted
 
 
-def test_convert_html_with_script_is_sanitized():
+def test_convert_html_with_script_is_sanitized(client):
     html_content = b"<script>evil()</script><p>Safe content</p>"
     file = io.BytesIO(html_content)
 
