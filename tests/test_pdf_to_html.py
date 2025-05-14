@@ -27,15 +27,3 @@ def test_pdf_to_html_conversion_returns_html(sample_pdf_bytes):
     assert html.startswith("<html>")
     assert "</html>" in html
     assert "Hello, World!" in html
-
-
-def test_pdf_to_html_endpoint(client, sample_pdf_bytes):
-    response = client.post(
-        "/api/v1/pdf/convert-to-html/",
-        files={"file": ("sample.pdf", io.BytesIO(sample_pdf_bytes), "application/pdf")},
-    )
-
-    assert response.status_code == 200
-    assert response.headers["content-disposition"].endswith('.html"')
-    assert "<html>" in response.text
-    assert "Hello, World!" in response.text

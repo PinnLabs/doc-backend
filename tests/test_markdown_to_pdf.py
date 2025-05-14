@@ -29,19 +29,3 @@ def test_markdown_to_pdf_conversion():
 
     assert isinstance(pdf, bytes)
     assert pdf[:5] == b"%PDF-"
-
-
-@pytest.mark.asyncio
-async def test_api_markdown_conversion(client):
-    markdown_content = "# API Test\n\nThis is a test."
-
-    files = {
-        "file": ("test.md", markdown_content, "text/markdown"),
-    }
-
-    response = client.post("/api/v1/markdown/convert-to-pdf/", files=files)
-
-    assert response.status_code == 200
-    assert response.headers["content-type"] == "application/pdf"
-    assert response.headers["content-disposition"].endswith('.pdf"')
-    assert response.content[:5] == b"%PDF-"

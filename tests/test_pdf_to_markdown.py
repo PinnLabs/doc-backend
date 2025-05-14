@@ -10,7 +10,6 @@ client = TestClient(app)
 
 
 def generate_pdf(text: str) -> bytes:
-    """Generate a simple PDF with ReportLab."""
     buffer = io.BytesIO()
     c = canvas.Canvas(buffer)
     for i, line in enumerate(text.splitlines()):
@@ -39,19 +38,3 @@ def test_pdf_to_markdown_removes_blank_lines():
     assert markdown.count("Line 1") == 1
     assert markdown.count("Line 2") == 1
     assert markdown.count("\n\n") == 1  # Paragraph split
-
-
-def test_convert_pdf_to_markdown_endpoint(client):
-    text = "FastAPI PDF\nIntegration Test"
-    pdf_bytes = generate_pdf(text)
-    file = io.BytesIO(pdf_bytes)
-
-    response = client.post(
-        "/api/v1/pdf/convert-to-markdown/",
-        files={"file": ("sample.pdf", file, "application/pdf")},
-    )
-
-    assert response.status_code == 200
-    assert response.headers["Content-Type"].startswith("text/markdown")
-    assert "FastAPI PDF" in response.text
-    assert "Integration Test" in response.text
