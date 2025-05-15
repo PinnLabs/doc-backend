@@ -17,9 +17,10 @@ jobs:
 
     - name: Install dependencies
       run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
-        pip install black mypy pytest isort pre-commit
+        curl -LsSf https://astral.sh/uv/install.sh | sh
+        export PATH="$HOME/.cargo/bin:$PATH"
+        uv add -r requirements.txt
+        uv add black mypy pytest isort pre-commit
 
     - name: Run tests
       env:
@@ -32,4 +33,9 @@ jobs:
         CLOUDINARY_CLOUD_NAME: test
         CLOUDINARY_API_KEY: test
         CLOUDINARY_API_SECRET: test
-      run: pytest --maxfail=1 --disable-warnings
+        STRIPE_SECRET_KEY: test
+        STRIPE_PRICE_ID_STARTER: test
+        STRIPE_PRICE_ID_PRO: test
+        STRIPE_PRICE_ID_UNLIMITED: test
+
+      run: uv run pytest --maxfail=1 --disable-warnings
