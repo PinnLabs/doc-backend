@@ -11,5 +11,5 @@ To get started with the project, you'll need to install the required dependencie
 Before you can start, you'll need to have the following installed:
 
 - Python 3.12.3 or higher
-- Pip 
+- Uv 
 

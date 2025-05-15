@@ -9,6 +9,11 @@ class Settings(BaseSettings):
     JWT_SECRET: str
     JWT_ALGORITHM: str = "HS256"
     JWT_EXP_SECONDS: int = 3600
+    STRIPE_SECRET_KEY: str
+    STRIPE_PRICE_ID_STARTER: str
+    STRIPE_PRICE_ID_PRO: str
+    STRIPE_PRICE_ID_UNLIMITED: str
+    FRONTEND_URL: str
     SUPABASE_URL: str
     SUPABASE_KEY: str
     FIREBASE_CREDENTIALS: str = (
