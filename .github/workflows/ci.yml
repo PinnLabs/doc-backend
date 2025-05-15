@@ -37,5 +37,6 @@ jobs:
         STRIPE_PRICE_ID_STARTER: test
         STRIPE_PRICE_ID_PRO: test
         STRIPE_PRICE_ID_UNLIMITED: test
+        FRONTEND_URL: http://localhost:3000
 
       run: uv run pytest --maxfail=1 --disable-warnings
