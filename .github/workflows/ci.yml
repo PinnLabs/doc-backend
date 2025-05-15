@@ -23,14 +23,13 @@ jobs:
 
     - name: Run tests
       env:
+        CI: true
         DATABASE_URL: sqlite:///./test.db
         SECRET_KEY: test-secret
         JWT_SECRET: test-jwt-secret
         SUPABASE_URL: https://example.supabase.co
-        SUPABASE_KEY: test
+        SUPABASE_KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.mock.payload.signature
         CLOUDINARY_CLOUD_NAME: test
         CLOUDINARY_API_KEY: test
         CLOUDINARY_API_SECRET: test
       run: pytest --maxfail=1 --disable-warnings
-
-

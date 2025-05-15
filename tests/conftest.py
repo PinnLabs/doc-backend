@@ -1,3 +1,4 @@
+import os
 from unittest.mock import patch
 
 import pytest
@@ -18,7 +19,6 @@ def override_get_current_user():
 def client():
     app.dependency_overrides[get_current_user] = override_get_current_user
 
-    # patch onde a função É USADA, não definida!
     with patch(
         "app.services.supabase_service.check_and_increment_usage", return_value=None
     ):
@@ -26,3 +26,12 @@ def client():
             yield c
 
     app.dependency_overrides.clear()
+
+
+if os.getenv("CI") == "true":
+    from unittest.mock import MagicMock
+
+    import app.services.supabase_service
+
+    # Override the actual Supabase client with a mock
+    app.services.supabase_service.supabase = MagicMock()
