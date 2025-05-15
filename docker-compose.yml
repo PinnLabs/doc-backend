@@ -1,0 +1,29 @@
+version: '3.9'
+
+services:
+  backend-doxcrafter:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: backend
+    environment:
+      DB_URL: ${DB_URL}
+      FRONTEND_URL: ${FRONTEND_URL}
+      SECRET_KEY: ${SECRET_KEY}
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_ALGORITHM: ${JWT_ALGORITHM}
+      JWT_EXP_SECONDS: ${JWT_EXP_SECONDS}
+      SUPABASE_URL: ${SUPABASE_URL}
+      SUPABASE_KEY: ${SUPABASE_KEY}
+      STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY}
+      STRIPE_PRICE_ID_STARTER: ${STRIPE_PRICE_ID_STARTER}
+      STRIPE_PRICE_ID_PRO: ${STRIPE_PRICE_ID_PRO}
+      STRIPE_PRICE_ID_UNLIMITED: ${STRIPE_PRICE_ID_UNLIMITED}
+    networks:
+      - app_network
+    ports:
+      - "8005:8005"
+    command: ["uv", "run", "uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8005", "--forwarded-allow-ips", "*", "--proxy-headers"]
+
+networks:
+  app_network:

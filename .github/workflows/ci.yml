@@ -30,9 +30,6 @@ jobs:
         JWT_SECRET: test-jwt-secret
         SUPABASE_URL: https://example.supabase.co
         SUPABASE_KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.mock.payload.signature
-        CLOUDINARY_CLOUD_NAME: test
-        CLOUDINARY_API_KEY: test
-        CLOUDINARY_API_SECRET: test
         STRIPE_SECRET_KEY: test
         STRIPE_PRICE_ID_STARTER: test
         STRIPE_PRICE_ID_PRO: test
