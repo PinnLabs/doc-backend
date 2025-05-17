@@ -1,53 +1,53 @@
-import os
-import subprocess
-from pathlib import Path
+import fitz
 
 
-class PDFtoHTMLConverter:
-    def __init__(self, pdf2htmlex_path: str = "pdf2htmlEX"):
-        self.pdf2htmlex_path = pdf2htmlex_path
+class PDFToHTMLConverter:
+    def __init__(self):
+        pass
 
-    def convert(self, pdf_input_path: str, html_output_path: str = None) -> str:
+    def convert(self, pdf_bytes: bytes) -> str:
+        doc = fitz.open(stream=pdf_bytes, filetype="pdf")
+
+        custom_css = """
+        body {
+          font-family: "Helvetica", "Arial", sans-serif;
+          font-size: 12pt;
+          line-height: 1.6;
+          margin: 2cm;
+          color: #333;
+        }
+
+        h1, h2, h3 {
+          color: #2c3e50;
+        }
+
+        code, pre {
+          background: #f4f4f4;
+          padding: 0.2em 0.4em;
+          border-radius: 4px;
+          font-family: "Courier New", Courier, monospace;
+        }
+
+        table {
+          width: 100%;
+          border-collapse: collapse;
+        }
+
+        table, th, td {
+          border: 1px solid #ddd;
+          padding: 8px;
+        }
         """
-        Converte um arquivo PDF em HTML com alta fidelidade, preservando layout, fontes e estilos.
 
-        :param pdf_input_path: Caminho absoluto ou relativo para o arquivo PDF de entrada.
-        :param html_output_path: Caminho do arquivo HTML de saída (opcional). Se não for passado, será no mesmo diretório com extensão .html.
-        :return: Caminho do arquivo HTML gerado.
-        :raises FileNotFoundError: Se o arquivo PDF não existir.
-        :raises RuntimeError: Se a conversão falhar.
-        """
-        input_path = Path(pdf_input_path).resolve()
+        html_parts = [
+            "<html><head><meta charset='utf-8'>",
+            f"<style>{custom_css}</style>",
+            "</head><body>",
+        ]
 
-        if not input_path.exists():
-            raise FileNotFoundError(f"Arquivo PDF não encontrado: {input_path}")
+        for page in doc:
+            page_html = page.get_text("html")
+            html_parts.append(page_html)
 
-        output_path = (
-            Path(html_output_path).resolve()
-            if html_output_path
-            else input_path.with_suffix(".html")
-        )
-
-        try:
-            command = [
-                self.pdf2htmlex_path,
-                "--embed-css",
-                "1",
-                "--embed-font",
-                "1",
-                "--embed-image",
-                "1",
-                "--embed-javascript",
-                "1",
-                "--zoom",
-                "1.3",
-                "--dest-dir",
-                str(output_path.parent),
-                str(input_path),
-            ]
-
-            subprocess.run(command, check=True)
-
-            return str(output_path)
-        except subprocess.CalledProcessError as e:
-            raise RuntimeError(f"Erro ao converter PDF para HTML: {e}")
+        html_parts.append("</body></html>")
+        return "\n".join(html_parts)
