@@ -87,21 +87,52 @@ def check_and_increment_usage(uid: str) -> str:
     now = datetime.utcnow()
     last_reset = datetime.fromisoformat(user["last_conversion_reset"])
 
+    conversions_this_month = user.get("conversions_this_month", 0)
+    total_conversions = user.get("total_conversions", 0)
+
     if now - last_reset > timedelta(days=30):
-        user["conversions_this_month"] = 0
-        user["last_conversion_reset"] = now.isoformat()
+        conversions_this_month = 0
+        last_reset = now
 
     plan = user["plans"]
     limit = plan["conversion_limit"]
 
-    if limit is not None and user["conversions_this_month"] >= limit:
+    if limit is not None and conversions_this_month >= limit:
         raise HTTPException(status_code=403, detail="Monthly conversion limit reached")
 
     supabase.from_("users").update(
         {
-            "conversions_this_month": user["conversions_this_month"] + 1,
-            "last_conversion_reset": user["last_conversion_reset"],
+            "conversions_this_month": conversions_this_month + 1,
+            "total_conversions": total_conversions + 1,
+            "last_conversion_reset": last_reset.isoformat(),
         }
     ).eq("uid", uid).execute()
 
     return plan["name"]
+
+
+def get_user_usage(uid: str) -> dict:
+    total_res = (
+        supabase.from_("documents")
+        .select("id", count="exact")
+        .eq("user_id", uid)
+        .execute()
+    )
+    total_conversions = total_res.count or 0
+
+    now = datetime.utcnow()
+    month_start = datetime(now.year, now.month, 1).isoformat()
+
+    month_res = (
+        supabase.from_("documents")
+        .select("id", count="exact")
+        .eq("user_id", uid)
+        .gte("created_at", month_start)
+        .execute()
+    )
+    conversions_this_month = month_res.count or 0
+
+    return {
+        "total_conversions": total_conversions,
+        "conversions_this_month": conversions_this_month,
+    }
