@@ -6,8 +6,10 @@ from fastapi.responses import PlainTextResponse, StreamingResponse
 from app.services.auth_service import get_current_user
 from app.services.html_to_markdown import HTMLToMarkdownConverter
 from app.services.html_to_pdf import HTMLToPDFConverter
-from app.services.supabase_service import (check_and_increment_usage,
-                                           store_converted_document)
+from app.services.supabase_service import (
+    check_and_increment_usage,
+    store_converted_document,
+)
 
 router = APIRouter(prefix="/api/v1/html", tags=["HTML"])
 
@@ -38,8 +40,8 @@ async def convert_html_to_markdown(
         plan_name=plan_name,
     )
 
-    return PlainTextResponse(
-        content=markdown_text,
+    return StreamingResponse(
+        io.BytesIO(markdown_bytes),
         media_type="text/markdown",
         headers={"Content-Disposition": f'attachment; filename="{filename}.md"'},
     )
