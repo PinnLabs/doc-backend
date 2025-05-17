@@ -1,53 +1,47 @@
-import fitz
+import asyncio
+import tempfile
+import uuid
+import os
 
 
 class PDFToHTMLConverter:
-    def __init__(self):
-        pass
+    async def convert(self, pdf_bytes: bytes) -> str:
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            unique_id = str(uuid.uuid4())
+            input_filename = f"{unique_id}.pdf"
+            output_filename = f"{unique_id}.html"
+            input_path = os.path.join(tmp_dir, input_filename)
 
-    def convert(self, pdf_bytes: bytes) -> str:
-        doc = fitz.open(stream=pdf_bytes, filetype="pdf")
+            with open(input_path, "wb") as f:
+                f.write(pdf_bytes)
 
-        custom_css = """
-        body {
-          font-family: "Helvetica", "Arial", sans-serif;
-          font-size: 12pt;
-          line-height: 1.6;
-          margin: 2cm;
-          color: #333;
-        }
+            process = await asyncio.create_subprocess_exec(
+                "pdf2htmlEX",
+                "--embed-css",
+                "1",
+                "--embed-image",
+                "1",
+                "--embed-font",
+                "1",
+                "--optimize-text",
+                "1",
+                "--zoom",
+                "1.3",
+                input_filename,
+                output_filename,
+                cwd=tmp_dir,
+                stdout=asyncio.subprocess.PIPE,
+                stderr=asyncio.subprocess.PIPE,
+            )
 
-        h1, h2, h3 {
-          color: #2c3e50;
-        }
+            stdout, stderr = await process.communicate()
 
-        code, pre {
-          background: #f4f4f4;
-          padding: 0.2em 0.4em;
-          border-radius: 4px;
-          font-family: "Courier New", Courier, monospace;
-        }
+            if process.returncode != 0:
+                raise RuntimeError(f"Erro na conversão do PDF: {stderr.decode()}")
 
-        table {
-          width: 100%;
-          border-collapse: collapse;
-        }
+            output_path = os.path.join(tmp_dir, output_filename)
 
-        table, th, td {
-          border: 1px solid #ddd;
-          padding: 8px;
-        }
-        """
+            with open(output_path, "r", encoding="utf-8") as f:
+                html_content = f.read()
 
-        html_parts = [
-            "<html><head><meta charset='utf-8'>",
-            f"<style>{custom_css}</style>",
-            "</head><body>",
-        ]
-
-        for page in doc:
-            page_html = page.get_text("html")
-            html_parts.append(page_html)
-
-        html_parts.append("</body></html>")
-        return "\n".join(html_parts)
+        return html_content

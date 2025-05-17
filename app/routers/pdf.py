@@ -1,8 +1,7 @@
 import io
-import tempfile
 
 from fastapi import APIRouter, Depends, File, UploadFile
-from fastapi.responses import PlainTextResponse, StreamingResponse
+from fastapi.responses import StreamingResponse
 
 from app.services.auth_service import get_current_user
 from app.services.pdf_to_html import PDFToHTMLConverter
@@ -23,7 +22,7 @@ async def convert_pdf_to_markdown(
     pdf_bytes = await file.read()
 
     converter = PDFToMarkdownConverter()
-    markdown_text = converter.convert(pdf_bytes)
+    markdown_text = await converter.convert(pdf_bytes)
     markdown_bytes = markdown_text.encode("utf-8")
     filename = file.filename.rsplit(".", 1)[0] if file.filename else "document"
 
@@ -52,7 +51,7 @@ async def convert_pdf_to_html(
     pdf_bytes = await file.read()
 
     converter = PDFToHTMLConverter()
-    html_output = converter.convert(pdf_bytes)
+    html_output = await converter.convert(pdf_bytes)
     html_bytes = html_output.encode("utf-8")
     filename = file.filename.rsplit(".", 1)[0] if file.filename else "document"
 
