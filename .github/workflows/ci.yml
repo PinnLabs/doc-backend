@@ -15,19 +15,9 @@ jobs:
       with:
         python-version: '3.13'
 
-    - name: Install dependencies
-      env:
-        UV_CACHE_DISABLED: 1  # ⛔ desativa cache interno do uv
-      run: |
-        curl -LsSf https://astral.sh/uv/install.sh | sh
-        export PATH="$HOME/.cargo/bin:$PATH"
-        uv add -r requirements.txt
-        uv add black mypy pytest isort pre-commit
-
     - name: Run tests
       env:
         CI: true
-        UV_CACHE_DISABLED: 1  # ⛔ desativa cache também ao rodar testes
         DATABASE_URL: sqlite:///./test.db
         SECRET_KEY: test-secret
         JWT_SECRET: test-jwt-secret
