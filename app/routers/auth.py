@@ -18,17 +18,42 @@ async def login(payload: LoginRequest, response: Response):
     email = firebase_user["email"]
 
     existing = supabase.table("users").select("*").eq("uid", uid).execute()
+
     if not existing.data:
-        supabase.table("users").insert(
-            {"uid": uid, "email": email, "plan": "free"}
-        ).execute()
+        result = (
+            supabase.table("pre_users")
+            .select("*")
+            .eq("email", email)
+            .maybe_single()
+            .execute()
+        )
+
+        pre_user = result.data if result else None
+
+        if pre_user:
+            supabase.table("users").insert(
+                {
+                    "uid": uid,
+                    "email": email,
+                    "stripe_customer_id": pre_user["stripe_customer_id"],
+                    "plan": pre_user.get("plan", "free"),
+                    "subscription_status": pre_user.get("subscription_status"),
+                    "current_period_end": pre_user.get("current_period_end"),
+                }
+            ).execute()
+
+            supabase.table("pre_users").delete().eq("email", email).execute()
+        else:
+            supabase.table("users").insert(
+                {"uid": uid, "email": email, "plan": "free"}
+            ).execute()
 
     response = JSONResponse(content={"message": "Login successful"})
     response.set_cookie(
         key="session",
         value=session_token,
         httponly=True,
-        secure=False,
+        secure=False,  # in production is always True
         samesite="Lax",
         max_age=3600,
         path="/",

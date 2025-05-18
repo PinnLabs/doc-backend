@@ -136,3 +136,12 @@ def get_user_usage(uid: str) -> dict:
         "total_conversions": total_conversions,
         "conversions_this_month": conversions_this_month,
     }
+
+
+def list_user_documents(user_id: str):
+    res = supabase.table("documents").select("*").eq("user_id", user_id).execute()
+
+    if not res.data:
+        raise Exception("No documents found or failed to fetch documents")
+
+    return res.data

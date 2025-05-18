@@ -24,6 +24,8 @@ async def stripe_webhook(request: Request, stripe_signature: str = Header(None))
     if event["type"] == "checkout.session.completed":
         session = event["data"]["object"]
         customer_id = session["customer"]
+        metadata = session.get("metadata", {})
+        guest_email = metadata.get("guest_email")
 
         # Fetch subscription
         subscription = stripe.Subscription.retrieve(session["subscription"])
@@ -41,10 +43,12 @@ async def stripe_webhook(request: Request, stripe_signature: str = Header(None))
         user = (
             supabase.table("users")
             .select("*")
-            .eq("stripe_customer_id", customer_id)
+            .eq("email", guest_email)
             .single()
             .execute()
             .data
+            if guest_email
+            else None
         )
         if user:
             supabase.table("users").update(

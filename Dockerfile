@@ -2,8 +2,25 @@ FROM python:3.11-slim
 
 WORKDIR /app
 
+RUN apt-get update && apt-get install -y \
+    curl \
+    wget \
+    libfontforge1 \
+    libpng-dev \
+    libjpeg-dev \
+    libpoppler-cpp-dev \
+    zlib1g-dev \
+    libglib2.0-0 \
+    libxml2 \
+    pandoc \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN wget https://github.com/pdf2htmlEX/pdf2htmlEX/releases/download/v0.18.8.rc1/pdf2htmlEX-0.18.8.rc1-master-20200630-Ubuntu-bionic-x86_64.deb && \
+    dpkg -i pdf2htmlex_0.18.8.rc2-1_amd64.deb || apt-get install -f -y && \
+    rm pdf2htmlex_0.18.8.rc2-1_amd64.deb
+
+# Instala o gerenciador de pacotes uv
 RUN apt-get update && \
-    apt-get install -y curl && \
     curl -LsSf https://astral.sh/uv/install.sh | sh && \
     apt-get remove -y curl && \
     apt-get autoremove -y && \

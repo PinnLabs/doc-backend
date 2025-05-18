@@ -3,10 +3,24 @@ from fastapi.middleware.cors import CORSMiddleware
 from secure import SecureHeaders
 
 from app.core.config import Settings
-from app.routers import auth, billing, dashboard, html, markdown, pdf, webhook
+from app.routers import (
+    all_converted_files,
+    auth,
+    billing,
+    dashboard,
+    html,
+    markdown,
+    pdf,
+    subscrition,
+    webhook,
+)
 
 settings = Settings()
-app = FastAPI()
+app = FastAPI(
+    docs_url=None,
+    redoc_url=None,
+    penapi_url=None,
+)
 
 secure_headers = SecureHeaders()
 
@@ -33,3 +47,5 @@ app.include_router(auth.router)
 app.include_router(billing.router)
 app.include_router(webhook.router)
 app.include_router(dashboard.router)
+app.include_router(all_converted_files.router)
+app.include_router(subscrition.router)

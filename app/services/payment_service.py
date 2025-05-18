@@ -37,8 +37,33 @@ def create_checkout_session(uid: str, email: str, plan: str) -> str:
         payment_method_types=["card"],
         line_items=[{"price": price_map[plan], "quantity": 1}],
         mode="subscription",
-        success_url=f"{settings.FRONTEND_URL}/success?session_id={{CHECKOUT_SESSION_ID}}",
+        success_url=f"{settings.FRONTEND_URL}/auth/success?session_id={{CHECKOUT_SESSION_ID}}",
         cancel_url=f"{settings.FRONTEND_URL}/cancel",
+    )
+
+    return session.url
+
+
+def create_guest_checkout_session(email: str, plan: str) -> str:
+    customer = stripe.Customer.create(email=email)
+
+    price_map = {
+        "starter": settings.STRIPE_PRICE_ID_STARTER,
+        "pro": settings.STRIPE_PRICE_ID_PRO,
+        "unlimited": settings.STRIPE_PRICE_ID_UNLIMITED,
+    }
+
+    if plan not in price_map:
+        raise ValueError("Invalid plan")
+
+    session = stripe.checkout.Session.create(
+        customer=customer.id,
+        payment_method_types=["card"],
+        line_items=[{"price": price_map[plan], "quantity": 1}],
+        mode="subscription",
+        success_url=f"{settings.FRONTEND_URL}/auth/post-checkout?session_id={{CHECKOUT_SESSION_ID}}",
+        cancel_url=f"{settings.FRONTEND_URL}/cancel",
+        metadata={"guest_email": email},
     )
 
     return session.url
