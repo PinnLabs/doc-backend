@@ -15,6 +15,12 @@ jobs:
       with:
         python-version: '3.13'
 
+    - name: Install dependencies
+      run: |
+        curl -LsSf https://astral.sh/uv/install.sh | sh
+        export PATH="$HOME/.cargo/bin:$PATH"
+        uv add black mypy pytest isort pre-commit
+
     - name: Run tests
       env:
         CI: true
