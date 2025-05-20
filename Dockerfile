@@ -8,6 +8,7 @@ WORKDIR /app
 RUN apt-get update && apt-get install -y --no-install-recommends \
     curl \
     wget \
+    git \
     libpng-dev \
     ca-certificates \
     libjpeg-dev \
