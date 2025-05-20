@@ -30,7 +30,7 @@ RUN curl -L https://github.com/astral-sh/uv/releases/latest/download/uv-x86_64-u
 ENV PATH="/root/.cargo/bin:$PATH"
 
 COPY pyproject.toml uv.lock ./
-RUN uv pip install -r uv.lock --system
+RUN uv sync --system
 
 COPY . /app
 
