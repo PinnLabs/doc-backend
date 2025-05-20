@@ -4,8 +4,7 @@ WORKDIR /app
 
 RUN apt-get update && apt-get install -y \
     curl \
-    wget \
-    libfontforge1 \
+    wget \ 
     libpng-dev \
     libjpeg-dev \
     libpoppler-cpp-dev \
