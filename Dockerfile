@@ -16,6 +16,17 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     zlib1g-dev \
     libglib2.0-0 \
     libxml2 \
+    libpango-1.0-0 \
+    libpangoft2-1.0-0 \
+    libpangocairo-1.0-0 \
+    libcairo2 \
+    libgdk-pixbuf2.0-0 \
+    libffi-dev \
+    libjpeg-dev \
+    libxml2 \
+    libxslt1.1 \
+    libpq-dev \
+    libssl-dev \
     pandoc \
     && rm -rf /var/lib/apt/lists/*
 
