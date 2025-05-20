@@ -16,11 +16,8 @@ from app.routers import (
 )
 
 settings = Settings()
-app = FastAPI(
-    docs_url=None,
-    redoc_url=None,
-    penapi_url=None,
-)
+app = FastAPI()
+
 
 secure_headers = SecureHeaders()
 
