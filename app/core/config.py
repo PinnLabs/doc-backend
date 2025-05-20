@@ -20,7 +20,9 @@ class Settings(BaseSettings):
         "app/doccrafter-544cf-firebase-adminsdk-fbsvc-368172c6d5.json"
     )
     DEBUG: bool = False
-    ENV: str = "development"
+    ENV: str = "production"
+
+    model_config = ConfigDict(extra="ignore")
 
     class Config:
         env_file = ".env"
