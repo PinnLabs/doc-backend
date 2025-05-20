@@ -16,7 +16,7 @@ RUN apt-get update && apt-get install -y \
 
 RUN wget https://github.com/pdf2htmlEX/pdf2htmlEX/releases/download/v0.18.8.rc1/pdf2htmlEX-0.18.8.rc1-master-20200630-Ubuntu-bionic-x86_64.deb && \
     dpkg -i pdf2htmlex_0.18.8.rc2-1_amd64.deb || apt-get install -f -y && \
-    rm pdf2htmlex_0.18.8.rc2-1_amd64.deb
+    rm pdf2htmlEX-0.18.8.rc1-master-20200630-Ubuntu-bionic-x86_64.deb
 
 # Instala o gerenciador de pacotes uv
 RUN apt-get update && \
