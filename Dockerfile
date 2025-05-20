@@ -30,7 +30,7 @@ RUN curl -L https://github.com/astral-sh/uv/releases/latest/download/uv-x86_64-u
 ENV PATH="/root/.cargo/bin:$PATH"
 
 COPY pyproject.toml uv.lock ./
-RUN uv sync --system
+RUN uv run --locked
 
 COPY . /app
 
