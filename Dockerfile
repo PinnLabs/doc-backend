@@ -19,8 +19,13 @@ RUN wget https://github.com/pdf2htmlEX/pdf2htmlEX/releases/download/v0.18.8.rc1/
     rm pdf2htmlEX-0.18.8.rc1-master-20200630-Ubuntu-bionic-x86_64.deb
 
 # Instala o gerenciador de pacotes uv
+
+# Baixa e instala o uv
 RUN curl -L https://github.com/astral-sh/uv/releases/latest/download/uv-x86_64-unknown-linux-gnu.tar.gz | tar -xz && \
-    mv uv /usr/local/bin/
+    mv uv-x86_64-unknown-linux-gnu/uv /usr/local/bin/ && \
+    chmod +x /usr/local/bin/uv && \
+    rm -rf uv-x86_64-unknown-linux-gnu*
+
 
 ENV PATH="/root/.cargo/bin:$PATH"
 
