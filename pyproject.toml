@@ -24,7 +24,7 @@ dependencies = [
     "click==8.1.8",
     "configobj==5.0.9",
     "configparser==7.2.0",
-    "cryptography==44.0.3",
+    "cryptography==45.0.5",
     "cssselect2==0.8.0",
     "deprecated==1.2.18",
     "deprecation==2.1.0",
