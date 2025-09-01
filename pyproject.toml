@@ -12,7 +12,7 @@ dependencies = [
     "annotated-types==0.7.0",
     "anyio==4.9.0",
     "attrs==25.3.0",
-    "beautifulsoup4==4.13.4",
+    "beautifulsoup4==4.13.5",
     "brotli==1.1.0",
     "cachecontrol==0.14.3",
     "cachetools==5.5.2",
